@@ -1,0 +1,49 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  images: ImageMetadata[];
+  alt: string;
+}
+
+const { images, alt } = Astro.props;
+---
+
+<div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+  {images.map((img, i) => (
+    <button
+      type="button"
+      data-modal-open={`gallery-lightbox`}
+      data-gallery-index={i}
+      class="gallery-trigger group relative aspect-[4/3] overflow-hidden rounded-sm bg-ink"
+      aria-label={`Ampliar imagen ${i + 1} de ${alt}`}
+    >
+      <Image src={img} alt={`${alt} — imagen ${i + 1}`} width={480} height={360} class="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+      <span class="absolute inset-0 bg-ink/0 transition-colors duration-300 group-hover:bg-ink/20"></span>
+    </button>
+  ))}
+</div>
+
+<div id="gallery-lightbox" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true" data-modal>
+  <div class="absolute inset-0 bg-ink/90 backdrop-blur-sm" data-modal-backdrop></div>
+  <button type="button" class="absolute right-5 top-5 flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10" aria-label="Cerrar" data-modal-close>
+    <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+  </button>
+  <img data-gallery-image class="relative max-h-[85vh] w-auto max-w-[90vw] rounded-sm object-contain" alt={alt} />
+</div>
+
+<script define:vars={{ srcs: images.map((i) => i.src), alt }} is:inline>
+  const lightbox = document.getElementById("gallery-lightbox");
+  const imgEl = lightbox?.querySelector("[data-gallery-image]");
+
+  document.querySelectorAll(".gallery-trigger").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const idx = Number(btn.getAttribute("data-gallery-index"));
+      if (imgEl && srcs[idx]) {
+        imgEl.setAttribute("src", srcs[idx]);
+        imgEl.setAttribute("alt", `${alt} — imagen ${idx + 1}`);
+      }
+    });
+  });
+</script>

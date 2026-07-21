@@ -1,0 +1,56 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import PostCard from "@components/cards/PostCard.astro";
+import { breadcrumbSchema } from "@/lib/seo";
+import { slugify } from "@/lib/utils";
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()
+);
+
+const [featured, ...rest] = posts;
+const tags = [...new Set(posts.flatMap((p) => p.data.tags))];
+
+const title = "Blog";
+const description =
+  "Artículos técnicos sobre CCTV, redes, fibra óptica, cableado estructurado y buenas prácticas de infraestructura tecnológica.";
+const structuredData = [breadcrumbSchema([{ label: "Blog" }])];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Blog"
+    title="Ingeniería aplicada, sin relleno"
+    description="Artículos escritos por nuestro equipo técnico sobre infraestructura, seguridad electrónica y redes corporativas."
+    breadcrumbs={[{ label: "Blog" }]}
+  />
+
+  <section class="py-16 lg:py-20">
+    <Container>
+      {tags.length > 0 && (
+        <div class="flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <a href={`/blog/tag/${slugify(tag)}`} class="rounded-full border border-gray-200 px-3.5 py-1.5 font-mono text-xs uppercase tracking-wide text-gray-600 hover:border-orange hover:text-orange">
+              {tag}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {featured && (
+        <div class="mt-10">
+          <PostCard post={featured} featured />
+        </div>
+      )}
+
+      {rest.length > 0 && (
+        <div class="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {rest.map((post) => <PostCard post={post} />)}
+        </div>
+      )}
+    </Container>
+  </section>
+</BaseLayout>

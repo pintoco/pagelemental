@@ -1,0 +1,17 @@
+---
+interface Props {
+  class?: string;
+  variant?: "light" | "dark" | "outline";
+}
+const { class: className, variant = "light" } = Astro.props;
+
+const variants = {
+  light: "bg-orange-50 text-orange-600",
+  dark: "bg-white/10 text-white",
+  outline: "border border-gray-200 text-gray-600",
+};
+---
+
+<span class:list={["inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-wide", variants[variant], className]}>
+  <slot />
+</span>

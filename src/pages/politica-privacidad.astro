@@ -1,0 +1,107 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import { SITE } from "@/data/site";
+import { breadcrumbSchema } from "@/lib/seo";
+
+const title = "Política de Privacidad";
+const description = "Cómo Elemental Pro SPA recopila, utiliza y protege los datos personales de sus usuarios y clientes.";
+const structuredData = [breadcrumbSchema([{ label: "Política de Privacidad" }])];
+const lastUpdated = "20 de julio de 2026";
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Legal"
+    title="Política de Privacidad"
+    description={`Última actualización: ${lastUpdated}`}
+    breadcrumbs={[{ label: "Política de Privacidad" }]}
+  />
+
+  <section class="py-16 lg:py-20">
+    <Container narrow>
+      <div class="prose prose-neutral max-w-none prose-headings:font-display prose-headings:font-semibold prose-a:text-orange">
+        <p>
+          En {SITE.legalName} valoramos la confianza de quienes visitan nuestro sitio web y contratan nuestros
+          servicios. Esta Política de Privacidad describe qué datos personales recopilamos, con qué finalidad los
+          utilizamos y qué derechos tiene sobre su información, en conformidad con la Ley N° 19.628 sobre
+          Protección de la Vida Privada y demás normativa aplicable en Chile.
+        </p>
+
+        <h2>1. Datos que recopilamos</h2>
+        <p>Recopilamos datos personales cuando usted los proporciona voluntariamente, principalmente a través de:</p>
+        <ul>
+          <li>El formulario de contacto y solicitud de cotización.</li>
+          <li>Comunicaciones directas por correo electrónico, teléfono o WhatsApp.</li>
+          <li>Cookies y tecnologías similares utilizadas para analítica del sitio (ver sección 5).</li>
+        </ul>
+        <p>Los datos que podemos recopilar incluyen: nombre, empresa, correo electrónico, teléfono, ciudad, servicio de interés y el contenido de su mensaje.</p>
+
+        <h2>2. Finalidad del tratamiento</h2>
+        <p>Utilizamos sus datos personales para:</p>
+        <ul>
+          <li>Responder sus consultas y solicitudes de cotización.</li>
+          <li>Elaborar propuestas técnicas y comerciales.</li>
+          <li>Dar cumplimiento a los contratos de servicio suscritos.</li>
+          <li>Mejorar la experiencia de navegación en nuestro sitio web.</li>
+          <li>Enviar comunicaciones comerciales, únicamente si usted lo ha autorizado expresamente.</li>
+        </ul>
+
+        <h2>3. Conservación de los datos</h2>
+        <p>
+          Conservamos sus datos personales durante el tiempo necesario para cumplir con las finalidades descritas
+          en esta política y con las obligaciones legales o contractuales que correspondan.
+        </p>
+
+        <h2>4. Comunicación a terceros</h2>
+        <p>
+          No vendemos ni comercializamos sus datos personales. Solo compartimos información con proveedores de
+          servicios tecnológicos estrictamente necesarios para operar nuestro sitio web y procesar sus solicitudes
+          (por ejemplo, proveedores de envío de correo electrónico), quienes están obligados contractualmente a
+          proteger dicha información.
+        </p>
+
+        <h2>5. Cookies</h2>
+        <p>
+          Utilizamos cookies propias y de terceros para analizar el tráfico del sitio y mejorar su funcionamiento.
+          Usted puede aceptar o rechazar el uso de cookies no esenciales a través del aviso de cookies que aparece
+          en su primera visita, y puede modificar la configuración de cookies de su navegador en cualquier momento.
+        </p>
+
+        <h2>6. Sus derechos</h2>
+        <p>
+          Usted puede solicitar acceso, rectificación, cancelación u oposición al tratamiento de sus datos
+          personales escribiendo a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Responderemos su solicitud
+          dentro de los plazos establecidos por la normativa vigente.
+        </p>
+
+        <h2>7. Seguridad de la información</h2>
+        <p>
+          Implementamos medidas técnicas y organizativas razonables para proteger sus datos personales frente a
+          accesos no autorizados, pérdida o alteración, incluyendo cifrado en tránsito (HTTPS) y controles de
+          acceso a nuestros sistemas internos.
+        </p>
+
+        <h2>8. Cambios a esta política</h2>
+        <p>
+          Podemos actualizar esta Política de Privacidad periódicamente. La fecha de la última actualización se
+          indica al inicio de este documento. Le recomendamos revisarla ocasionalmente.
+        </p>
+
+        <h2>9. Contacto</h2>
+        <p>
+          Ante cualquier duda sobre esta Política de Privacidad, puede escribirnos a{" "}
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a> o dirigirse a nuestras oficinas en {SITE.address.street},{" "}
+          {SITE.address.city}, {SITE.address.region}.
+        </p>
+
+        <p class="text-sm text-gray-500">
+          Este documento es una plantilla base y debe ser revisado por un asesor legal antes de su publicación
+          definitiva, para asegurar el cumplimiento con la normativa vigente aplicable a la actividad específica de
+          la empresa.
+        </p>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

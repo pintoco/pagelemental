@@ -1,0 +1,193 @@
+---
+import Icon from "@components/ui/Icon.astro";
+import Button from "@components/ui/Button.astro";
+import { services } from "@/data/services";
+
+interface Props {
+  defaultService?: string;
+  compact?: boolean;
+}
+
+const { defaultService, compact = false } = Astro.props;
+---
+
+<form id="contact-form" class="space-y-5" novalidate>
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <div>
+      <label for="name" class="mb-1.5 block text-sm font-medium text-ink">Nombre completo <span class="text-orange">*</span></label>
+      <input id="name" name="name" type="text" required autocomplete="name" maxlength="120"
+        class="w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange" />
+      <p class="field-error mt-1.5 hidden text-xs text-red-600"></p>
+    </div>
+    <div>
+      <label for="company" class="mb-1.5 block text-sm font-medium text-ink">Empresa</label>
+      <input id="company" name="company" type="text" autocomplete="organization" maxlength="120"
+        class="w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange" />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <div>
+      <label for="email" class="mb-1.5 block text-sm font-medium text-ink">Correo electrónico <span class="text-orange">*</span></label>
+      <input id="email" name="email" type="email" required autocomplete="email" maxlength="160"
+        class="w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange" />
+      <p class="field-error mt-1.5 hidden text-xs text-red-600"></p>
+    </div>
+    <div>
+      <label for="phone" class="mb-1.5 block text-sm font-medium text-ink">Teléfono</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+56 9 1234 5678"
+        class="w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange" />
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <div>
+      <label for="city" class="mb-1.5 block text-sm font-medium text-ink">Ciudad</label>
+      <input id="city" name="city" type="text" autocomplete="address-level2" maxlength="80"
+        class="w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange" />
+    </div>
+    <div>
+      <label for="service" class="mb-1.5 block text-sm font-medium text-ink">Servicio de interés</label>
+      <select id="service" name="service"
+        class="w-full rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange">
+        <option value="">Seleccione un servicio</option>
+        {services.map((s) => (
+          <option value={s.slug} selected={defaultService === s.slug}>{s.name}</option>
+        ))}
+        <option value="otro">Otro / No estoy seguro</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <label for="message" class="mb-1.5 block text-sm font-medium text-ink">Mensaje <span class="text-orange">*</span></label>
+    <textarea id="message" name="message" required rows={compact ? 3 : 5} maxlength="2000"
+      class="w-full resize-y rounded-sm border border-gray-300 bg-white px-4 py-3 text-sm text-ink outline-none transition-colors focus:border-orange"
+      placeholder="Cuéntenos brevemente qué necesita: tipo de instalación, tamaño del recinto, plazos estimados…"></textarea>
+    <p class="field-error mt-1.5 hidden text-xs text-red-600"></p>
+  </div>
+
+  <div>
+    <label for="attachment" class="mb-1.5 block text-sm font-medium text-ink">Adjuntar archivo <span class="font-normal text-gray-500">(plano, cotización, foto — máx. 8 MB)</span></label>
+    <input id="attachment" name="attachment" type="file" accept=".pdf,.jpg,.jpeg,.png,.dwg"
+      class="w-full rounded-sm border border-dashed border-gray-300 bg-gray-50 px-4 py-3 text-sm text-gray-600 outline-none file:mr-4 file:rounded-sm file:border-0 file:bg-orange-50 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-orange" />
+    <p class="field-error mt-1.5 hidden text-xs text-red-600"></p>
+  </div>
+
+  <label class="flex items-start gap-3 text-xs text-gray-500">
+    <input type="checkbox" name="consent" required class="mt-0.5 size-4 rounded-sm border-gray-300 text-orange focus:ring-orange-400" />
+    Acepto la <a href="/politica-privacidad" class="underline hover:text-ink">Política de Privacidad</a> y el tratamiento de mis datos para responder esta solicitud. <span class="text-orange">*</span>
+  </label>
+
+  <div id="form-status" class="hidden items-start gap-3 rounded-sm border p-4 text-sm" role="status" aria-live="polite">
+    <Icon name="check" class="mt-0.5 size-5 shrink-0" />
+    <span id="form-status-text"></span>
+  </div>
+
+  <Button type="submit" size="lg" class="w-full justify-center sm:w-auto">
+    <span id="submit-label">Enviar solicitud</span>
+    <Icon name="arrow-right" class="size-4" />
+  </Button>
+</form>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const statusBox = document.getElementById("form-status");
+  const statusText = document.getElementById("form-status-text");
+  const submitLabel = document.getElementById("submit-label");
+
+  function setError(fieldId: string, message: string | null) {
+    const field = document.getElementById(fieldId);
+    const errorEl = field?.parentElement?.querySelector(".field-error");
+    if (!field || !errorEl) return;
+    if (message) {
+      errorEl.textContent = message;
+      errorEl.classList.remove("hidden");
+      field.classList.add("border-red-500");
+    } else {
+      errorEl.classList.add("hidden");
+      field.classList.remove("border-red-500");
+    }
+  }
+
+  function showStatus(kind: "success" | "error", message: string) {
+    if (!statusBox || !statusText) return;
+    statusBox.classList.remove("hidden");
+    statusBox.classList.add("flex");
+    statusBox.className = statusBox.className
+      .replace(/border-\S+|bg-\S+|text-(red|green)-\S+/g, "")
+      .trim();
+    statusBox.classList.add(
+      "flex",
+      ...(kind === "success"
+        ? ["border-green-200", "bg-green-50", "text-green-700"]
+        : ["border-red-200", "bg-red-50", "text-red-700"])
+    );
+    statusText.textContent = message;
+  }
+
+  function validate(data: FormData): boolean {
+    let valid = true;
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const message = String(data.get("message") ?? "").trim();
+
+    if (name.length < 2) {
+      setError("name", "Ingresa tu nombre completo.");
+      valid = false;
+    } else setError("name", null);
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setError("email", "Ingresa un correo electrónico válido.");
+      valid = false;
+    } else setError("email", null);
+
+    if (message.length < 10) {
+      setError("message", "Cuéntanos un poco más sobre tu proyecto (mínimo 10 caracteres).");
+      valid = false;
+    } else setError("message", null);
+
+    const file = data.get("attachment") as File | null;
+    if (file && file.size > 8 * 1024 * 1024) {
+      setError("attachment", "El archivo supera el tamaño máximo de 8 MB.");
+      valid = false;
+    } else setError("attachment", null);
+
+    return valid;
+  }
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+
+    if (!validate(data)) {
+      showStatus("error", "Revisa los campos marcados antes de continuar.");
+      return;
+    }
+
+    const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    submitButton?.setAttribute("disabled", "true");
+    if (submitLabel) submitLabel.textContent = "Enviando…";
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        body: data,
+      });
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        showStatus("success", "Gracias, recibimos tu solicitud. Un especialista te contactará dentro de las próximas 24 horas hábiles.");
+        form.reset();
+      } else {
+        showStatus("error", result.message ?? "No pudimos enviar tu solicitud. Intenta nuevamente o escríbenos por WhatsApp.");
+      }
+    } catch (error) {
+      showStatus("error", "Ocurrió un problema de conexión. Intenta nuevamente en unos minutos.");
+    } finally {
+      submitButton?.removeAttribute("disabled");
+      if (submitLabel) submitLabel.textContent = "Enviar solicitud";
+    }
+  });
+</script>

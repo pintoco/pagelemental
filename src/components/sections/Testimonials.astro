@@ -1,0 +1,30 @@
+---
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import Icon from "@components/ui/Icon.astro";
+import { testimonials } from "@/data/marketing";
+---
+
+<section class="bg-navy py-20 text-white lg:py-28">
+  <Container>
+    <SectionHeading
+      eyebrow="Clientes"
+      title="Empresas y organismos públicos que confían en nosotros"
+      light
+    />
+    <div class="mt-14 grid grid-cols-1 gap-6 lg:grid-cols-3">
+      {testimonials.map((t, i) => (
+        <figure class="flex flex-col justify-between border border-white/10 bg-white/5 p-7 animate-fade-up" style={`animation-delay:${i * 100}ms`}>
+          <div>
+            <Icon name="check" class="size-5 text-orange-400" />
+            <blockquote class="mt-4 text-[15px] leading-relaxed text-gray-200">"{t.quote}"</blockquote>
+          </div>
+          <figcaption class="mt-6 border-t border-white/10 pt-4">
+            <p class="text-sm font-medium text-white">{t.author}</p>
+            <p class="text-xs text-gray-400">{t.role} · {t.company}</p>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  </Container>
+</section>

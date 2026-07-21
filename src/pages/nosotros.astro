@@ -1,0 +1,92 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import Icon from "@components/ui/Icon.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import Stats from "@components/sections/Stats.astro";
+import Timeline from "@components/sections/Timeline.astro";
+import Partners from "@components/sections/Partners.astro";
+import CTA from "@components/sections/CTA.astro";
+import { breadcrumbSchema } from "@/lib/seo";
+
+const title = "Nosotros";
+const description =
+  "Conozca a Elemental Pro SPA: más de 12 años diseñando e instalando infraestructura tecnológica para empresas, industria y organismos públicos en Chile.";
+const structuredData = [breadcrumbSchema([{ label: "Nosotros" }])];
+
+const values = [
+  { icon: "target", title: "Precisión técnica", description: "Cada propuesta parte de un levantamiento real en terreno, no de una plantilla comercial." },
+  { icon: "shield", title: "Responsabilidad", description: "Respondemos por lo que instalamos, con SLA definidos y soporte post-venta real." },
+  { icon: "users", title: "Cercanía técnica", description: "Hablamos el mismo idioma que su equipo de TI u operaciones, sin tecnicismos vacíos." },
+  { icon: "trending-up", title: "Mejora continua", description: "Documentamos y medimos cada proyecto para entregar mejores propuestas la próxima vez." },
+];
+
+const history = [
+  { title: "2013 — Fundación", description: "Elemental Pro nace como proveedor especializado en cableado estructurado para pymes en Copiapó." },
+  { title: "2016 — Seguridad electrónica", description: "Incorporamos CCTV y control de acceso, ampliando el foco hacia proyectos de seguridad integral." },
+  { title: "2019 — Infraestructura crítica", description: "Comenzamos a diseñar salas de servidores y redes para clientes industriales y municipales." },
+  { title: "2022 — Cloud e IA", description: "Sumamos soluciones cloud y videovigilancia inteligente para acompañar la modernización de nuestros clientes." },
+  { title: "Hoy — Cobertura nacional", description: "Ejecutamos proyectos en todo Chile, con más de 180 instalaciones entregadas y contratos de mantención activos." },
+];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Nosotros"
+    title="Ingenieros de infraestructura, no vendedores de equipos"
+    description="Somos un equipo de especialistas en CCTV, redes, fibra óptica y servidores que diseña, instala y mantiene infraestructura tecnológica crítica para empresas, industria y organismos públicos en Chile."
+    breadcrumbs={[{ label: "Nosotros" }]}
+  />
+
+  <Stats />
+
+  <section class="py-20 lg:py-28">
+    <Container>
+      <div class="grid grid-cols-1 gap-14 lg:grid-cols-2">
+        <div>
+          <SectionHeading eyebrow="Misión" title="Infraestructura que no falla cuando más se necesita" />
+          <p class="mt-5 text-gray-600 leading-relaxed">
+            Diseñar, instalar y mantener infraestructura tecnológica confiable para que nuestros clientes puedan
+            enfocarse en su operación, sabiendo que sus sistemas críticos de seguridad, conectividad y datos están
+            en manos de un equipo responsable de principio a fin.
+          </p>
+        </div>
+        <div>
+          <SectionHeading eyebrow="Visión" title="Ser el referente técnico en infraestructura para empresas en Chile" />
+          <p class="mt-5 text-gray-600 leading-relaxed">
+            Queremos ser la empresa que empresas, industria y organismos públicos llaman primero cuando necesitan
+            que un proyecto de infraestructura tecnológica se ejecute bien, a tiempo y con respaldo a largo plazo.
+          </p>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <section class="bg-gray-50 py-20 lg:py-28">
+    <Container>
+      <SectionHeading eyebrow="Nuestros valores" title="Cómo trabajamos" align="center" />
+      <div class="mt-14 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+        {values.map((value) => (
+          <div class="text-center">
+            <span class="mx-auto flex size-12 items-center justify-center rounded-full bg-orange-50 text-orange">
+              <Icon name={value.icon} class="size-6" />
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-ink">{value.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">{value.description}</p>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <Timeline steps={history} eyebrow="Trayectoria" title="Más de una década construyendo infraestructura" />
+
+  <Partners title="Certificados y capacitados en las principales marcas del rubro" />
+
+  <CTA
+    title="Conozca a nuestro equipo técnico"
+    description="Agende una reunión sin costo para conversar sobre su proyecto de infraestructura."
+    primaryCta={{ label: "Agendar conversación", href: "/contacto" }}
+  />
+</BaseLayout>

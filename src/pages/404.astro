@@ -1,0 +1,46 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import Button from "@components/ui/Button.astro";
+import Icon from "@components/ui/Icon.astro";
+import { services } from "@/data/services";
+
+const title = "Página no encontrada";
+const description = "La página que buscas no existe o fue movida.";
+---
+
+<BaseLayout title={title} description={description} noindex heroOnDark>
+  <section class="relative flex min-h-[80vh] items-center overflow-hidden bg-ink text-white">
+    <div class="grid-backdrop-dark pointer-events-none absolute inset-0"></div>
+    <div class="pointer-events-none absolute right-0 top-0 size-[480px] rounded-full bg-orange/20 blur-3xl"></div>
+    <Container class="relative py-24">
+      <p class="eyebrow text-orange-400">
+        <span class="h-px w-6 bg-current"></span>
+        Error 404
+      </p>
+      <h1 class="mt-6 font-display text-7xl font-semibold sm:text-8xl">404</h1>
+      <p class="mt-6 max-w-lg text-lg text-gray-300">
+        La página que busca no existe o fue movida. Puede volver al inicio o revisar nuestros servicios de
+        infraestructura tecnológica.
+      </p>
+      <div class="mt-10 flex flex-wrap gap-4">
+        <Button href="/" size="lg">
+          Volver al inicio
+          <Icon name="arrow-right" class="size-4" />
+        </Button>
+        <Button href="/contacto" size="lg" variant="outline-light">Contactar</Button>
+      </div>
+
+      <div class="mt-16 border-t border-white/10 pt-10">
+        <p class="eyebrow text-orange-400">Quizás buscaba</p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          {services.slice(0, 6).map((service) => (
+            <a href={`/servicios/${service.slug}`} class="rounded-full border border-white/15 px-4 py-2 text-sm text-gray-300 hover:border-orange-400 hover:text-orange-400">
+              {service.shortName}
+            </a>
+          ))}
+        </div>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

@@ -1,0 +1,179 @@
+---
+import { Image } from "astro:assets";
+import Container from "@components/ui/Container.astro";
+import Button from "@components/ui/Button.astro";
+import Icon from "@components/ui/Icon.astro";
+import { primaryNav } from "@/data/nav";
+import { SITE } from "@/data/site";
+import logo from "@/assets/brand/logo-elemental.png";
+
+interface Props {
+  // Set when the page's first section is a dark hero (e.g. the homepage),
+  // so the transparent header starts with light text instead of dark text
+  // that would disappear against a dark background. Once the user scrolls
+  // past it, the header script switches to the light (white bg) colors
+  // regardless of this prop.
+  onDark?: boolean;
+}
+
+const { onDark = false } = Astro.props;
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string) {
+  if (href === "/") return currentPath === "/";
+  return currentPath.startsWith(href);
+}
+
+const headerStyle = onDark
+  ? "--hdr-fg:rgba(255,255,255,.82); --hdr-fg-hover:#fff; --hdr-fg-active:var(--color-orange-400);"
+  : "--hdr-fg:var(--color-ink); --hdr-fg-hover:var(--color-ink); --hdr-fg-active:var(--color-orange);";
+---
+
+<header
+  id="site-header"
+  class="fixed inset-x-0 top-0 z-50 transition-colors duration-300"
+  data-on-dark={onDark ? "true" : "false"}
+  style={headerStyle}
+>
+  <div id="header-bg" class="absolute inset-0 border-b border-transparent bg-white/0 backdrop-blur-0 transition-all duration-300"></div>
+  <Container class="relative flex h-20 items-center justify-between">
+    <a href="/" class="flex items-center" aria-label={`${SITE.name} — Inicio`}>
+      <Image src={logo} alt={SITE.name} width={160} height={73} class="h-9 w-auto sm:h-10" />
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex" aria-label="Navegación principal">
+      {primaryNav.map((link) => (
+        <div class="group relative">
+          <a
+            href={link.href}
+            aria-current={isActive(link.href) ? "page" : undefined}
+            class="hdr-link flex items-center gap-1 rounded-sm px-4 py-2.5 text-sm font-medium transition-colors"
+          >
+            {link.label}
+            {link.children && <Icon name="chevron-down" class="size-3.5 transition-transform group-hover:rotate-180" />}
+          </a>
+          {link.children && (
+            <div class="invisible absolute left-0 top-full grid w-72 grid-cols-1 gap-0.5 rounded-md border border-gray-100 bg-white p-2 opacity-0 shadow-elevated transition-all duration-200 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 translate-y-1">
+              {link.children.map((child) => (
+                <a href={child.href} class="rounded-sm px-3 py-2.5 text-sm text-gray-700 transition-colors hover:bg-orange-50 hover:text-orange">
+                  {child.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </nav>
+
+    <div class="hidden items-center gap-3 lg:flex">
+      <a href={SITE.phoneHref} class="hdr-link flex items-center gap-2 text-sm font-medium">
+        <Icon name="phone" class="size-4" />
+        {SITE.phone}
+      </a>
+      <Button href="/contacto" size="sm">
+        Cotizar proyecto
+        <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+      </Button>
+    </div>
+
+    <button
+      id="menu-toggle"
+      type="button"
+      class="hdr-link flex size-10 items-center justify-center rounded-sm lg:hidden"
+      aria-label="Abrir menú de navegación"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <Icon name="menu" class="size-6" id="menu-icon-open" />
+      <Icon name="close" class="hidden size-6" id="menu-icon-close" />
+    </button>
+  </Container>
+
+  <div id="mobile-menu" class="invisible fixed inset-x-0 top-20 bottom-0 z-40 overflow-y-auto bg-white opacity-0 transition-all duration-300 lg:hidden">
+    <Container class="flex flex-col gap-1 py-6">
+      {primaryNav.map((link) => (
+        <details class="group border-b border-gray-100 py-1">
+          <summary class="flex cursor-pointer list-none items-center justify-between py-3 text-base font-medium text-ink">
+            {link.label}
+            {link.children && <Icon name="chevron-down" class="size-4 transition-transform group-open:rotate-180" />}
+          </summary>
+          {link.children && (
+            <div class="flex flex-col gap-1 pb-3 pl-3">
+              {link.children.map((child) => (
+                <a href={child.href} class="rounded-sm px-3 py-2 text-sm text-gray-600">{child.label}</a>
+              ))}
+            </div>
+          )}
+        </details>
+      ))}
+      <Button href="/contacto" class="mt-4 justify-center">Cotizar proyecto</Button>
+      <a href={SITE.phoneHref} class="mt-2 flex items-center justify-center gap-2 py-3 text-sm font-medium text-ink/80">
+        <Icon name="phone" class="size-4" /> {SITE.phone}
+      </a>
+    </Container>
+  </div>
+</header>
+
+<style>
+  /* Colors are driven by the --hdr-fg custom properties set on <header>
+     (see headerStyle above and the scroll handler below), so both the
+     initial "onDark" prop and the scrolled state stay in sync from one
+     place instead of juggling Tailwind classes per element. */
+  .hdr-link {
+    color: var(--hdr-fg);
+  }
+  .hdr-link:hover {
+    color: var(--hdr-fg-hover);
+  }
+  .hdr-link[aria-current="page"] {
+    color: var(--hdr-fg-active);
+  }
+</style>
+
+<script>
+  const header = document.getElementById("site-header");
+  const headerBg = document.getElementById("header-bg");
+  const toggle = document.getElementById("menu-toggle");
+  const menu = document.getElementById("mobile-menu");
+  const iconOpen = document.getElementById("menu-icon-open");
+  const iconClose = document.getElementById("menu-icon-close");
+
+  const lightColors = { fg: "var(--color-ink)", fgHover: "var(--color-ink)", fgActive: "var(--color-orange)" };
+  const darkColors = { fg: "rgba(255,255,255,.82)", fgHover: "#fff", fgActive: "var(--color-orange-400)" };
+
+  function setScrolled(scrolled: boolean) {
+    if (!headerBg || !header) return;
+    headerBg.className = scrolled
+      ? "absolute inset-0 border-b border-gray-100 bg-white/90 backdrop-blur-md transition-all duration-300"
+      : "absolute inset-0 border-b border-transparent bg-white/0 backdrop-blur-0 transition-all duration-300";
+
+    const onDark = header.dataset.onDark === "true";
+    const colors = scrolled || !onDark ? lightColors : darkColors;
+    header.style.setProperty("--hdr-fg", colors.fg);
+    header.style.setProperty("--hdr-fg-hover", colors.fgHover);
+    header.style.setProperty("--hdr-fg-active", colors.fgActive);
+  }
+
+  setScrolled(window.scrollY > 8);
+  window.addEventListener("scroll", () => setScrolled(window.scrollY > 8), { passive: true });
+
+  toggle?.addEventListener("click", () => {
+    const isOpen = menu?.classList.contains("visible-menu");
+    if (isOpen) {
+      menu?.classList.remove("visible-menu", "opacity-100", "visible");
+      menu?.classList.add("opacity-0", "invisible");
+      iconOpen?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+      toggle.setAttribute("aria-expanded", "false");
+      document.body.style.overflow = "";
+    } else {
+      menu?.classList.add("visible-menu", "opacity-100", "visible");
+      menu?.classList.remove("opacity-0", "invisible");
+      iconOpen?.classList.add("hidden");
+      iconClose?.classList.remove("hidden");
+      toggle.setAttribute("aria-expanded", "true");
+      document.body.style.overflow = "hidden";
+    }
+  });
+</script>

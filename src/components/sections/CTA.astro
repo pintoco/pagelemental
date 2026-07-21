@@ -1,0 +1,47 @@
+---
+import Container from "@components/ui/Container.astro";
+import Button from "@components/ui/Button.astro";
+import Icon from "@components/ui/Icon.astro";
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  description?: string;
+  primaryCta?: { label: string; href: string };
+  secondaryCta?: { label: string; href: string };
+}
+
+const {
+  eyebrow = "Hablemos de su proyecto",
+  title,
+  description,
+  primaryCta = { label: "Solicitar cotización", href: "/contacto" },
+  secondaryCta,
+} = Astro.props;
+---
+
+<section class="relative overflow-hidden bg-ink py-20 text-white lg:py-24">
+  <div class="grid-backdrop-dark pointer-events-none absolute inset-0"></div>
+  <div class="pointer-events-none absolute right-0 top-0 size-96 rounded-full bg-orange/20 blur-3xl"></div>
+  <Container class="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+    <div class="max-w-xl">
+      <p class="eyebrow text-orange-400">
+        <span class="h-px w-6 bg-current"></span>
+        {eyebrow}
+      </p>
+      <h2 class="mt-5 text-3xl font-semibold leading-tight sm:text-4xl">{title}</h2>
+      {description && <p class="mt-4 text-gray-300">{description}</p>}
+    </div>
+    <div class="flex shrink-0 flex-wrap items-center gap-4">
+      <Button href={primaryCta.href} size="lg">
+        {primaryCta.label}
+        <Icon name="arrow-right" class="size-4 transition-transform group-hover:translate-x-0.5" />
+      </Button>
+      {secondaryCta && (
+        <Button href={secondaryCta.href} size="lg" variant="outline-light">
+          {secondaryCta.label}
+        </Button>
+      )}
+    </div>
+  </Container>
+</section>

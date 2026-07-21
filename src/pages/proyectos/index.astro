@@ -1,0 +1,41 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import ProjectCard from "@components/cards/ProjectCard.astro";
+import CTA from "@components/sections/CTA.astro";
+import { breadcrumbSchema } from "@/lib/seo";
+
+const projects = (await getCollection("proyectos")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+const title = "Proyectos";
+const description =
+  "Instalaciones reales de CCTV, redes, fibra óptica y data center ejecutadas para empresas, industria y organismos públicos en Chile.";
+const structuredData = [breadcrumbSchema([{ label: "Proyectos" }])];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Casos de éxito"
+    title="Proyectos ejecutados en terreno"
+    description="Una muestra de instalaciones reales: el problema, la solución técnica implementada y el resultado medido."
+    breadcrumbs={[{ label: "Proyectos" }]}
+  />
+
+  <section class="py-20 lg:py-28">
+    <Container>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {projects.map((project) => <ProjectCard project={project} />)}
+      </div>
+    </Container>
+  </section>
+
+  <CTA
+    title="¿Quiere ver un caso similar al suyo?"
+    description="Cuéntenos su industria y objetivo, y le compartimos referencias de proyectos comparables."
+    primaryCta={{ label: "Conversar con un especialista", href: "/contacto" }}
+  />
+</BaseLayout>

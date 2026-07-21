@@ -1,0 +1,13 @@
+---
+interface Props {
+  class?: string;
+  as?: keyof HTMLElementTagNameMap;
+  narrow?: boolean;
+}
+
+const { class: className, as: Tag = "div", narrow = false } = Astro.props;
+---
+
+<Tag class:list={["mx-auto w-full px-6 lg:px-10", narrow ? "max-w-3xl" : "max-w-7xl", className]}>
+  <slot />
+</Tag>

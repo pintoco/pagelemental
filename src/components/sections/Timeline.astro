@@ -1,0 +1,31 @@
+---
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import type { ServiceProcessStep } from "@/types";
+
+interface Props {
+  steps: ServiceProcessStep[];
+  title?: string;
+  eyebrow?: string;
+}
+
+const { steps, title = "Cómo trabajamos", eyebrow = "Proceso" } = Astro.props;
+---
+
+<section class="bg-gray-50 py-20 lg:py-28">
+  <Container>
+    <SectionHeading eyebrow={eyebrow} title={title} />
+    <ol class="relative mt-14 grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
+      <div class="pointer-events-none absolute left-0 right-0 top-6 hidden h-px bg-gray-300 lg:block" aria-hidden="true"></div>
+      {steps.map((step, i) => (
+        <li class="relative flex flex-col animate-fade-up" style={`animation-delay:${i * 90}ms`}>
+          <span class="relative z-10 flex size-12 items-center justify-center rounded-full border-2 border-navy bg-gray-50 font-mono text-sm font-medium text-navy">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <h3 class="mt-5 text-base font-semibold text-ink">{step.title}</h3>
+          <p class="mt-2 text-sm leading-relaxed text-gray-600">{step.description}</p>
+        </li>
+      ))}
+    </ol>
+  </Container>
+</section>

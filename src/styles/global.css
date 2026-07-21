@@ -1,0 +1,178 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@import "@fontsource/sora/500.css";
+@import "@fontsource/sora/600.css";
+@import "@fontsource/sora/700.css";
+@import "@fontsource/ibm-plex-sans/400.css";
+@import "@fontsource/ibm-plex-sans/500.css";
+@import "@fontsource/ibm-plex-sans/600.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+/* ------------------------------------------------------------------ */
+/* Design tokens                                                       */
+/* ------------------------------------------------------------------ */
+@theme {
+  --font-display: "Sora", "IBM Plex Sans", sans-serif;
+  --font-sans: "IBM Plex Sans", "Sora", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Neutrals */
+  --color-ink: #0a0e14;
+  --color-ink-800: #101623;
+  --color-ink-700: #161d2e;
+  --color-ink-600: #232c42;
+  --color-gray-50: #f6f7f9;
+  --color-gray-100: #eef1f5;
+  --color-gray-200: #dfe4eb;
+  --color-gray-300: #c7cdd6;
+  --color-gray-500: #808a99;
+  --color-gray-600: #5b6472;
+  --color-gray-700: #3d4552;
+
+  /* Brand — navy as the structural/dark base, orange as the single brand accent (from the logo) */
+  --color-navy: #0f2a54;
+  --color-navy-700: #0b2044;
+  /* #c2480a rather than the logo's brighter #e8590c: the brighter tone only
+     hits ~3.6:1 contrast on white (fails WCAG AA text contrast); this shade
+     keeps the same hue and reaches ~5:1 for text and white-on-orange buttons. */
+  --color-orange: #c2480a;
+  --color-orange-600: #9c3a07;
+  --color-orange-50: #fdf0e6;
+  --color-orange-400: #ff7a1a;
+
+  --shadow-elevated: 0 20px 60px -20px rgba(10, 14, 20, 0.35);
+  --shadow-card: 0 1px 2px rgba(10, 14, 20, 0.06), 0 8px 24px -12px rgba(10, 14, 20, 0.12);
+
+  --animate-fade-up: fade-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in: fade-in 0.6s ease both;
+  --animate-marquee: marquee 32s linear infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Base                                                                 */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-white text-ink font-sans antialiased;
+    font-feature-settings: "ss01" 1, "cv01" 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+    letter-spacing: -0.02em;
+  }
+
+  ::selection {
+    background: var(--color-orange-400);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-orange-400);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reusable utility patterns                                           */
+/* ------------------------------------------------------------------ */
+@layer components {
+  .eyebrow {
+    @apply inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.18em] text-orange;
+  }
+
+  .grid-backdrop {
+    background-image:
+      linear-gradient(to right, rgba(15, 42, 84, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(15, 42, 84, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .grid-backdrop-dark {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .corner-frame {
+    position: relative;
+  }
+  .corner-frame::before,
+  .corner-frame::after {
+    content: "";
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    border-color: var(--color-orange-400);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .corner-frame::before {
+    top: -1px;
+    left: -1px;
+    border-top: 2px solid;
+    border-left: 2px solid;
+  }
+  .corner-frame::after {
+    bottom: -1px;
+    right: -1px;
+    border-bottom: 2px solid;
+    border-right: 2px solid;
+  }
+  .corner-frame:hover::before,
+  .corner-frame:hover::after,
+  .corner-frame:focus-within::before,
+  .corner-frame:focus-within::after {
+    opacity: 1;
+  }
+}

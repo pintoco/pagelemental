@@ -1,0 +1,98 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import { SITE } from "@/data/site";
+import { breadcrumbSchema } from "@/lib/seo";
+
+const title = "Términos y Condiciones";
+const description = "Términos y condiciones de uso del sitio web de Elemental Pro SPA.";
+const structuredData = [breadcrumbSchema([{ label: "Términos y Condiciones" }])];
+const lastUpdated = "20 de julio de 2026";
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Legal"
+    title="Términos y Condiciones"
+    description={`Última actualización: ${lastUpdated}`}
+    breadcrumbs={[{ label: "Términos y Condiciones" }]}
+  />
+
+  <section class="py-16 lg:py-20">
+    <Container narrow>
+      <div class="prose prose-neutral max-w-none prose-headings:font-display prose-headings:font-semibold prose-a:text-orange">
+        <p>
+          El presente documento regula el uso del sitio web {SITE.url} ("el Sitio"), operado por{" "}
+          {SITE.legalName} ("Elemental Pro", "nosotros"). Al navegar en el Sitio, usted acepta los términos aquí
+          descritos.
+        </p>
+
+        <h2>1. Objeto del sitio</h2>
+        <p>
+          El Sitio tiene como finalidad informar sobre los servicios de infraestructura tecnológica ofrecidos por
+          Elemental Pro y permitir que empresas y organismos interesados soliciten cotizaciones o información
+          adicional. El Sitio no constituye una tienda en línea ni permite la compra directa de productos o
+          servicios.
+        </p>
+
+        <h2>2. Uso permitido</h2>
+        <p>Usted se compromete a utilizar el Sitio de forma lícita y a no:</p>
+        <ul>
+          <li>Utilizar el Sitio con fines fraudulentos o que causen daño a Elemental Pro o a terceros.</li>
+          <li>Intentar acceder sin autorización a sistemas, servidores o redes conectadas al Sitio.</li>
+          <li>Reproducir, distribuir o modificar el contenido del Sitio sin autorización previa por escrito.</li>
+        </ul>
+
+        <h2>3. Propiedad intelectual</h2>
+        <p>
+          Todo el contenido del Sitio —textos, imágenes, logotipos, diseño e infraestructura de software— es
+          propiedad de Elemental Pro o de sus licenciantes, y está protegido por la normativa de propiedad
+          intelectual e industrial vigente en Chile.
+        </p>
+
+        <h2>4. Cotizaciones y propuestas</h2>
+        <p>
+          La información publicada en el Sitio sobre servicios tiene carácter referencial. Las condiciones
+          comerciales definitivas —precios, plazos y alcance— se formalizan mediante una propuesta técnica y
+          comercial específica, y posteriormente en un contrato de servicios entre las partes.
+        </p>
+
+        <h2>5. Enlaces a sitios de terceros</h2>
+        <p>
+          El Sitio puede contener enlaces a sitios web de terceros (por ejemplo, redes sociales o WhatsApp).
+          Elemental Pro no se responsabiliza por el contenido, políticas o prácticas de dichos sitios.
+        </p>
+
+        <h2>6. Limitación de responsabilidad</h2>
+        <p>
+          Elemental Pro procura mantener el Sitio actualizado y libre de errores, pero no garantiza la
+          disponibilidad ininterrumpida del Sitio ni la ausencia total de errores en su contenido.
+        </p>
+
+        <h2>7. Modificaciones</h2>
+        <p>
+          Elemental Pro podrá modificar estos Términos y Condiciones en cualquier momento. Las modificaciones
+          entrarán en vigencia desde su publicación en esta misma página.
+        </p>
+
+        <h2>8. Legislación aplicable</h2>
+        <p>
+          Estos Términos y Condiciones se rigen por las leyes de la República de Chile. Cualquier controversia
+          derivada de su interpretación o aplicación será sometida a los tribunales competentes de Copiapó, Chile.
+        </p>
+
+        <h2>9. Contacto</h2>
+        <p>
+          Para consultas sobre estos Términos y Condiciones, escríbanos a{" "}
+          <a href={`mailto:${SITE.email}`}>{SITE.email}</a>.
+        </p>
+
+        <p class="text-sm text-gray-500">
+          Este documento es una plantilla base y debe ser revisado por un asesor legal antes de su publicación
+          definitiva.
+        </p>
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

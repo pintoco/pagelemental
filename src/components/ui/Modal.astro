@@ -1,0 +1,66 @@
+---
+interface Props {
+  id: string;
+  labelledBy?: string;
+}
+const { id, labelledBy } = Astro.props;
+---
+
+<div
+  id={id}
+  class="fixed inset-0 z-[60] hidden items-center justify-center p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby={labelledBy}
+  data-modal
+>
+  <div class="absolute inset-0 bg-ink/80 backdrop-blur-sm" data-modal-backdrop></div>
+  <div class="relative max-h-[85vh] w-full max-w-3xl overflow-y-auto rounded-md bg-white p-6 shadow-elevated sm:p-8">
+    <button
+      type="button"
+      class="absolute right-4 top-4 flex size-9 items-center justify-center rounded-full text-gray-500 hover:bg-gray-100 hover:text-ink"
+      aria-label="Cerrar"
+      data-modal-close
+    >
+      <svg viewBox="0 0 24 24" class="size-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round">
+        <path d="M6 6l12 12M18 6 6 18"></path>
+      </svg>
+    </button>
+    <slot />
+  </div>
+</div>
+
+<script>
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+
+    const openTrigger = target.closest<HTMLElement>("[data-modal-open]");
+    if (openTrigger) {
+      const modal = document.getElementById(openTrigger.dataset.modalOpen!);
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    const closeTrigger = target.closest("[data-modal-close]") || target.closest("[data-modal-backdrop]");
+    if (closeTrigger) {
+      const modal = closeTrigger.closest<HTMLElement>("[data-modal]");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+        document.body.style.overflow = "";
+      }
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    document.querySelectorAll<HTMLElement>("[data-modal]:not(.hidden)").forEach((modal) => {
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+      document.body.style.overflow = "";
+    });
+  });
+</script>

@@ -1,0 +1,50 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import Accordion from "@components/ui/Accordion.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import CTA from "@components/sections/CTA.astro";
+import { generalFaqs } from "@/data/faq";
+import { services } from "@/data/services";
+import { breadcrumbSchema, faqSchema } from "@/lib/seo";
+
+const title = "Preguntas Frecuentes";
+const description =
+  "Respuestas a las preguntas más comunes sobre nuestros servicios, proceso de cotización, mantención y cobertura en Chile.";
+const structuredData = [breadcrumbSchema([{ label: "Preguntas Frecuentes" }]), faqSchema(generalFaqs)];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="FAQ"
+    title="Preguntas frecuentes"
+    description="Si su pregunta es sobre un servicio específico, también puede revisar la sección de FAQ dentro de cada página de servicio."
+    breadcrumbs={[{ label: "Preguntas Frecuentes" }]}
+  />
+
+  <section class="py-20 lg:py-28">
+    <Container narrow>
+      {generalFaqs.map((faq, i) => <Accordion question={faq.question} answer={faq.answer} open={i === 0} />)}
+    </Container>
+  </section>
+
+  <section class="bg-gray-50 py-20 lg:py-28">
+    <Container>
+      <SectionHeading eyebrow="Por servicio" title="¿Su pregunta es sobre un servicio en particular?" align="center" />
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        {services.map((service) => (
+          <a href={`/servicios/${service.slug}#faq`} class="rounded-full border border-gray-200 bg-white px-4 py-2 text-sm text-gray-700 hover:border-orange hover:text-orange">
+            {service.shortName}
+          </a>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <CTA
+    title="¿No encontró la respuesta que buscaba?"
+    description="Escríbanos directamente y le responderemos dentro de las próximas 24 horas hábiles."
+    primaryCta={{ label: "Contactar", href: "/contacto" }}
+  />
+</BaseLayout>

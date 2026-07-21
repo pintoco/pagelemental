@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F2A54"/>
+      <stop offset="100%" stop-color="#0A0E14"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#0FB8CB" stroke-opacity="0.15" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <circle cx="1040" cy="90" r="240" fill="#0FB8CB" opacity="0.12"/>
+  <text x="80" y="390" font-family="Sora, sans-serif" font-size="52" font-weight="600" fill="#F6F7F9">Infraestructura tecnológica para</text>
+  <text x="80" y="450" font-family="Sora, sans-serif" font-size="52" font-weight="600" fill="#F6F7F9">empresas e industria</text>
+  <text x="80" y="560" font-family="IBM Plex Mono, monospace" font-size="18" letter-spacing="3" fill="#0FB8CB">CCTV · REDES · FIBRA ÓPTICA · DATA CENTER · CLOUD</text>
+</svg>

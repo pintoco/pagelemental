@@ -1,0 +1,56 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import Partners from "@components/sections/Partners.astro";
+import Testimonials from "@components/sections/Testimonials.astro";
+import CTA from "@components/sections/CTA.astro";
+import Icon from "@components/ui/Icon.astro";
+import { breadcrumbSchema } from "@/lib/seo";
+
+const title = "Clientes";
+const description =
+  "Empresas industriales, retail, centros comerciales y organismos públicos que confían su infraestructura tecnológica a Elemental Pro SPA.";
+const structuredData = [breadcrumbSchema([{ label: "Clientes" }])];
+
+const sectors = [
+  { icon: "cpu", name: "Industria y manufactura" },
+  { icon: "users", name: "Retail y centros comerciales" },
+  { icon: "shield", name: "Organismos públicos y municipios" },
+  { icon: "server", name: "Empresas de servicios y oficinas corporativas" },
+  { icon: "network", name: "Educación e instituciones" },
+  { icon: "target", name: "Logística y bodegaje" },
+];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Clientes"
+    title="Empresas que confían su infraestructura crítica a nosotros"
+    description="Trabajamos con organizaciones de distintos rubros que comparten un mismo requisito: infraestructura tecnológica que funcione, todos los días."
+    breadcrumbs={[{ label: "Clientes" }]}
+  />
+
+  <section class="py-20 lg:py-28">
+    <Container>
+      <SectionHeading eyebrow="Sectores" title="Rubros en los que tenemos experiencia" align="center" />
+      <div class="mt-14 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-6">
+        {sectors.map((sector) => (
+          <div class="flex flex-col items-center gap-3 border border-gray-200 p-6 text-center">
+            <Icon name={sector.icon} class="size-6 text-orange" />
+            <span class="text-xs font-medium text-gray-700">{sector.name}</span>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <Partners />
+  <Testimonials />
+
+  <CTA
+    title="Súmese a las empresas que ya confían en Elemental Pro"
+    primaryCta={{ label: "Solicitar cotización", href: "/contacto" }}
+  />
+</BaseLayout>

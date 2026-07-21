@@ -1,0 +1,52 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import PostCard from "@components/cards/PostCard.astro";
+import { breadcrumbSchema } from "@/lib/seo";
+import { slugify } from "@/lib/utils";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const tagSlugs = new Map<string, string>();
+  for (const post of posts) {
+    for (const tag of post.data.tags) {
+      tagSlugs.set(slugify(tag), tag);
+    }
+  }
+
+  return [...tagSlugs.entries()].map(([slug, label]) => ({
+    params: { tag: slug },
+    props: {
+      label,
+      posts: posts
+        .filter((p) => p.data.tags.some((t) => slugify(t) === slug))
+        .sort((a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf()),
+    },
+  }));
+}
+
+const { label, posts } = Astro.props;
+
+const title = `Artículos sobre ${label}`;
+const description = `Artículos del blog de Elemental Pro etiquetados como "${label}".`;
+const structuredData = [breadcrumbSchema([{ label: "Blog", href: "/blog" }, { label }])];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Etiqueta"
+    title={`#${label}`}
+    description={`${posts.length} artículo${posts.length === 1 ? "" : "s"} encontrados.`}
+    breadcrumbs={[{ label: "Blog", href: "/blog" }, { label }]}
+  />
+
+  <section class="py-16 lg:py-20">
+    <Container>
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    </Container>
+  </section>
+</BaseLayout>

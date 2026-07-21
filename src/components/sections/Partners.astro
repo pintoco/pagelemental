@@ -1,0 +1,28 @@
+---
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import { partners } from "@/data/marketing";
+
+interface Props {
+  title?: string;
+}
+const { title = "Tecnología de fabricantes líderes a nivel mundial" } = Astro.props;
+const loop = [...partners, ...partners];
+---
+
+<section class="py-16 lg:py-20">
+  <Container>
+    <SectionHeading eyebrow="Partners tecnológicos" title={title} align="center" />
+  </Container>
+  <div class="relative mt-12 overflow-hidden">
+    <div class="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-white to-transparent"></div>
+    <div class="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-white to-transparent"></div>
+    <div class="flex w-max animate-marquee items-center gap-16">
+      {loop.map((partner) => (
+        <span class="whitespace-nowrap font-display text-xl font-semibold text-gray-300 transition-colors hover:text-navy">
+          {partner.name}
+        </span>
+      ))}
+    </div>
+  </div>
+</section>

@@ -1,0 +1,23 @@
+---
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import Accordion from "@components/ui/Accordion.astro";
+import type { ServiceFaq } from "@/types";
+
+interface Props {
+  faqs: ServiceFaq[];
+  title?: string;
+  eyebrow?: string;
+}
+
+const { faqs, title = "Preguntas frecuentes", eyebrow = "FAQ" } = Astro.props;
+---
+
+<section class="py-20 lg:py-28">
+  <Container narrow>
+    <SectionHeading eyebrow={eyebrow} title={title} />
+    <div class="mt-10">
+      {faqs.map((faq, i) => <Accordion question={faq.question} answer={faq.answer} open={i === 0} />)}
+    </div>
+  </Container>
+</section>

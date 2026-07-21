@@ -1,0 +1,89 @@
+---
+import "@/styles/global.css";
+import Header from "@components/layout/Header.astro";
+import Footer from "@components/layout/Footer.astro";
+import WhatsAppButton from "@components/layout/WhatsAppButton.astro";
+import ScrollToTop from "@components/layout/ScrollToTop.astro";
+import CookieBanner from "@components/layout/CookieBanner.astro";
+import { SITE } from "@/data/site";
+import { absoluteUrl, organizationSchema, pageTitle } from "@/lib/seo";
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  type?: "website" | "article";
+  structuredData?: object[];
+  // Pass true when the page's first section is a dark, full-bleed hero
+  // (no light PageHero underneath) so the transparent header starts with
+  // light text instead of dark text that would be invisible on it.
+  heroOnDark?: boolean;
+}
+
+const {
+  title,
+  description,
+  image = "/og-default.png",
+  noindex = false,
+  type = "website",
+  structuredData = [],
+  heroOnDark = false,
+} = Astro.props;
+
+const canonical = absoluteUrl(Astro.url.pathname);
+const ogImage = absoluteUrl(image);
+const schemas = [organizationSchema(), ...structuredData];
+---
+
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={SITE.themeColor} />
+
+    <title>{pageTitle(title)}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content={type} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={pageTitle(title)} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content="es_CL" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle(title)} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} — Blog`} href="/rss.xml" />
+
+    {schemas.map((schema) => (
+      <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
+    ))}
+
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
+  </head>
+  <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-sm focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-white">
+      Saltar al contenido principal
+    </a>
+    <Header onDark={heroOnDark} />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppButton />
+    <ScrollToTop />
+    <CookieBanner />
+  </body>
+</html>

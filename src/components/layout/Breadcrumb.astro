@@ -1,0 +1,29 @@
+---
+import Icon from "@components/ui/Icon.astro";
+import type { BreadcrumbItem } from "@/types";
+
+interface Props {
+  items: BreadcrumbItem[];
+  light?: boolean;
+}
+
+const { items, light = false } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class:list={["font-mono text-xs uppercase tracking-wide", light ? "text-white/60" : "text-gray-500"]}>
+  <ol class="flex flex-wrap items-center gap-2">
+    <li>
+      <a href="/" class:list={["hover:underline", light ? "hover:text-white" : "hover:text-ink"]}>Inicio</a>
+    </li>
+    {items.map((item) => (
+      <li class="flex items-center gap-2">
+        <Icon name="chevron-right" class="size-3" />
+        {item.href ? (
+          <a href={item.href} class:list={["hover:underline", light ? "hover:text-white" : "hover:text-ink"]}>{item.label}</a>
+        ) : (
+          <span aria-current="page" class:list={light ? "text-white" : "text-ink"}>{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

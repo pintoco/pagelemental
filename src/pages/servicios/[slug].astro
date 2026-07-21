@@ -1,0 +1,123 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import SectionHeading from "@components/ui/SectionHeading.astro";
+import Icon from "@components/ui/Icon.astro";
+import Badge from "@components/ui/Badge.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import Timeline from "@components/sections/Timeline.astro";
+import FAQ from "@components/sections/FAQ.astro";
+import CTA from "@components/sections/CTA.astro";
+import ContactForm from "@components/forms/ContactForm.astro";
+import ServiceCard from "@components/cards/ServiceCard.astro";
+import { services, getServiceBySlug } from "@/data/services";
+import { breadcrumbSchema, faqSchema, serviceSchema } from "@/lib/seo";
+
+export function getStaticPaths() {
+  return services.map((service) => ({
+    params: { slug: service.slug },
+    props: { service },
+  }));
+}
+
+const { service } = Astro.props;
+const relatedServices = service.relatedSlugs
+  .map((slug) => getServiceBySlug(slug))
+  .filter((s): s is NonNullable<typeof s> => Boolean(s));
+
+const title = service.name;
+const description = service.summary;
+const path = `/servicios/${service.slug}`;
+
+const structuredData = [
+  breadcrumbSchema([
+    { label: "Servicios", href: "/servicios" },
+    { label: service.shortName },
+  ]),
+  serviceSchema({ name: service.name, description: service.heroDescription, path }),
+  faqSchema(service.faqs),
+];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow={service.category}
+    title={service.name}
+    description={service.heroDescription}
+    breadcrumbs={[{ label: "Servicios", href: "/servicios" }, { label: service.shortName }]}
+  />
+
+  <section class="py-20 lg:py-28">
+    <Container>
+      <SectionHeading eyebrow="Beneficios" title={`Por qué implementar ${service.shortName.toLowerCase()} con nosotros`} />
+      <div class="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        {service.benefits.map((benefit, i) => (
+          <div class="border border-gray-200 p-6 animate-fade-up" style={`animation-delay:${i * 80}ms`}>
+            <span class="flex size-10 items-center justify-center rounded-sm bg-orange-50 text-orange">
+              <Icon name="check" class="size-5" />
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-ink">{benefit.title}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-gray-600">{benefit.description}</p>
+          </div>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <Timeline steps={service.process} eyebrow="Proceso de trabajo" title="Cómo ejecutamos su proyecto" />
+
+  <section class="py-20 lg:py-28">
+    <Container narrow>
+      <SectionHeading eyebrow="Tecnología" title="Marcas y tecnologías con las que trabajamos" align="center" />
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        {service.technologies.map((tech) => (
+          <Badge variant="outline" class="text-sm normal-case tracking-normal">{tech}</Badge>
+        ))}
+      </div>
+    </Container>
+  </section>
+
+  <FAQ faqs={service.faqs} eyebrow="Preguntas frecuentes" title={`Dudas comunes sobre ${service.shortName.toLowerCase()}`} />
+
+  <section class="border-t border-gray-200 bg-gray-50 py-20 lg:py-28">
+    <Container>
+      <div class="grid grid-cols-1 gap-14 lg:grid-cols-2">
+        <div>
+          <SectionHeading
+            eyebrow="Contacto"
+            title="Solicite una evaluación técnica sin costo"
+            description="Complete el formulario y un especialista en el área revisará su requerimiento para proponer la mejor solución técnica y comercial."
+          />
+          <ul class="mt-8 space-y-4">
+            <li class="flex items-center gap-3 text-sm text-gray-600">
+              <Icon name="clock" class="size-4 text-orange" /> Respuesta en menos de 48 horas hábiles
+            </li>
+            <li class="flex items-center gap-3 text-sm text-gray-600">
+              <Icon name="shield" class="size-4 text-orange" /> Evaluación técnica sin costo ni compromiso
+            </li>
+          </ul>
+        </div>
+        <div class="border border-gray-200 bg-white p-6 sm:p-8">
+          <ContactForm defaultService={service.slug} compact />
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  {relatedServices.length > 0 && (
+    <section class="py-20 lg:py-28">
+      <Container>
+        <SectionHeading eyebrow="Servicios relacionados" title="Combine este servicio con:" />
+        <div class="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {relatedServices.map((related, i) => <ServiceCard service={related} index={i} />)}
+        </div>
+      </Container>
+    </section>
+  )}
+
+  <CTA
+    title={`¿Listo para modernizar su ${service.category.toLowerCase()}?`}
+    primaryCta={{ label: "Solicitar cotización", href: "/contacto" }}
+    secondaryCta={{ label: "Ver todos los servicios", href: "/servicios" }}
+  />
+</BaseLayout>

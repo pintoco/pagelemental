@@ -1,0 +1,38 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import Container from "@components/ui/Container.astro";
+import PageHero from "@components/sections/PageHero.astro";
+import ServiceCard from "@components/cards/ServiceCard.astro";
+import CTA from "@components/sections/CTA.astro";
+import { services } from "@/data/services";
+import { breadcrumbSchema } from "@/lib/seo";
+
+const title = "Servicios de Infraestructura Tecnológica";
+const description =
+  "CCTV, videovigilancia inteligente, redes, fibra óptica, cableado estructurado, servidores, control de acceso, automatización, cloud y mantención para empresas e industria.";
+
+const structuredData = [breadcrumbSchema([{ label: "Servicios" }])];
+---
+
+<BaseLayout title={title} description={description} structuredData={structuredData}>
+  <PageHero
+    eyebrow="Servicios"
+    title="Infraestructura tecnológica de extremo a extremo"
+    description="Diseñamos, instalamos e integramos cada capa de su infraestructura: desde el cableado físico hasta la nube, con un mismo equipo responsable del resultado."
+    breadcrumbs={[{ label: "Servicios" }]}
+  />
+
+  <section class="py-20 lg:py-28">
+    <Container>
+      <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((service, i) => <ServiceCard service={service} index={i} />)}
+      </div>
+    </Container>
+  </section>
+
+  <CTA
+    title="¿No sabe con qué servicio partir?"
+    description="Cuéntenos su problema u objetivo y le recomendamos la solución técnica adecuada, sin compromiso."
+    primaryCta={{ label: "Conversar con un especialista", href: "/contacto" }}
+  />
+</BaseLayout>

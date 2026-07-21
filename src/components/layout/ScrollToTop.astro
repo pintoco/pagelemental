@@ -1,0 +1,32 @@
+---
+import Icon from "@components/ui/Icon.astro";
+---
+
+<button
+  id="scroll-to-top"
+  type="button"
+  aria-label="Volver arriba"
+  class="fixed bottom-6 left-6 z-40 flex size-11 translate-y-4 items-center justify-center rounded-full border border-gray-200 bg-white text-ink opacity-0 shadow-card transition-all duration-300 pointer-events-none"
+>
+  <Icon name="arrow-top" class="size-4" />
+</button>
+
+<script>
+  const btn = document.getElementById("scroll-to-top");
+
+  function update() {
+    if (!btn) return;
+    const show = window.scrollY > 600;
+    btn.classList.toggle("opacity-0", !show);
+    btn.classList.toggle("pointer-events-none", !show);
+    btn.classList.toggle("translate-y-4", !show);
+    btn.classList.toggle("translate-y-0", show);
+  }
+
+  window.addEventListener("scroll", update, { passive: true });
+  update();
+
+  btn?.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+</script>
