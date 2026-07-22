@@ -91,11 +91,14 @@
     font-feature-settings: "ss01" 1, "cv01" 1;
   }
 
+  /* No color here on purpose: headings inherit color from body (text-ink)
+     or from a dark-section ancestor (text-white) instead of hard-coding a
+     color that would fight that inheritance on dark hero/CTA sections. */
   h1,
   h2,
   h3,
   h4 {
-    @apply font-display text-ink;
+    @apply font-display;
     letter-spacing: -0.02em;
   }
 
