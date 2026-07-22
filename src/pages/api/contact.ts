@@ -1,4 +1,6 @@
 import type { APIRoute } from "astro";
+import { Resend } from "resend";
+import { getServiceBySlug } from "@/data/services";
 
 // This route is rendered on-demand as a Cloudflare Pages Function
 // (the rest of the site remains fully static — see astro.config.mjs).
@@ -6,6 +8,9 @@ export const prerender = false;
 
 const MAX_ATTACHMENT_BYTES = 8 * 1024 * 1024;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const FROM_ADDRESS = "Elemental Pro <contacto@elementalpro.cl>";
+const TO_ADDRESS = "contacto@elementalpro.cl";
 
 function json(body: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -28,7 +33,7 @@ function sanitize(value: FormDataEntryValue | null, maxLength: number): string {
   return clean.trim().slice(0, maxLength);
 }
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   let form: FormData;
   try {
     form = await request.formData();
@@ -41,7 +46,7 @@ export const POST: APIRoute = async ({ request }) => {
   const company = sanitize(form.get("company"), 120);
   const phone = sanitize(form.get("phone"), 30);
   const city = sanitize(form.get("city"), 80);
-  const service = sanitize(form.get("service"), 60);
+  const serviceSlug = sanitize(form.get("service"), 60);
   const message = sanitize(form.get("message"), 2000);
   const consent = form.get("consent");
   const attachment = form.get("attachment");
@@ -54,30 +59,69 @@ export const POST: APIRoute = async ({ request }) => {
     return json({ success: false, message: "El archivo adjunto supera el máximo de 8 MB." }, 422);
   }
 
-  // ---------------------------------------------------------------------
-  // TODO: conectar con Resend (o SMTP) para el envío real del correo.
-  //
-  //   import { Resend } from "resend";
-  //   const resend = new Resend(import.meta.env.RESEND_API_KEY);
-  //   await resend.emails.send({
-  //     from: "Elemental Pro <contacto@elementalpro.cl>",
-  //     to: "ventas@elementalpro.cl",
-  //     replyTo: email,
-  //     subject: `Nueva solicitud de cotización — ${service || "General"}`,
-  //     text: `Nombre: ${name}\nEmpresa: ${company}\nEmail: ${email}\n` +
-  //           `Teléfono: ${phone}\nCiudad: ${city}\nServicio: ${service}\n\n${message}`,
-  //     attachments: attachment instanceof File
-  //       ? [{ filename: attachment.name, content: Buffer.from(await attachment.arrayBuffer()) }]
-  //       : undefined,
-  //   });
-  //
-  // Configura RESEND_API_KEY como variable de entorno / secreto en
-  // Cloudflare Pages (Settings -> Environment variables) antes de activar
-  // el bloque anterior. Mientras tanto, la solicitud queda validada y
-  // registrada para integrarse con el proveedor de correo que se defina.
-  // ---------------------------------------------------------------------
+  const serviceName = getServiceBySlug(serviceSlug)?.name ?? (serviceSlug || "No especificado");
 
-  console.log("[contact] nueva solicitud", { name, email, company, phone, city, service });
+  const apiKey = locals.runtime?.env?.RESEND_API_KEY ?? import.meta.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    // No API key configured yet (e.g. local dev without .env, or Cloudflare
+    // env var not set up) — keep the form working, just skip the send.
+    console.log("[contact] RESEND_API_KEY no configurado; solicitud solo registrada", {
+      name,
+      email,
+      company,
+      phone,
+      city,
+      serviceName,
+    });
+    return json({ success: true, message: "Solicitud recibida correctamente." });
+  }
+
+  try {
+    const resend = new Resend(apiKey);
+
+    const attachments =
+      attachment instanceof File && attachment.size > 0
+        ? [
+            {
+              filename: attachment.name,
+              content: Buffer.from(await attachment.arrayBuffer()),
+            },
+          ]
+        : undefined;
+
+    const { error } = await resend.emails.send({
+      from: FROM_ADDRESS,
+      to: TO_ADDRESS,
+      replyTo: email,
+      subject: `Nueva solicitud de cotización — ${serviceName}`,
+      text: [
+        `Nombre: ${name}`,
+        `Empresa: ${company || "-"}`,
+        `Email: ${email}`,
+        `Teléfono: ${phone || "-"}`,
+        `Ciudad: ${city || "-"}`,
+        `Servicio: ${serviceName}`,
+        "",
+        message,
+      ].join("\n"),
+      attachments,
+    });
+
+    if (error) {
+      console.error("[contact] Resend devolvió un error", error);
+      return json(
+        { success: false, message: "No pudimos enviar tu solicitud. Intenta nuevamente o escríbenos por WhatsApp." },
+        502
+      );
+    }
+  } catch (err) {
+    console.error("[contact] error inesperado enviando el correo", err);
+    return json(
+      { success: false, message: "No pudimos enviar tu solicitud. Intenta nuevamente o escríbenos por WhatsApp." },
+      502
+    );
+  }
 
   return json({
     success: true,
