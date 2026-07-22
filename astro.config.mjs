@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
 
-const SITE_URL = 'https://www.elementalpro.cl';
+const SITE_URL = 'https://elementalpro.cl';
 
 export default defineConfig({
   site: SITE_URL,

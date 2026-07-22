@@ -2,7 +2,7 @@ export const SITE = {
   name: "Elemental Pro SPA",
   shortName: "Elemental Pro",
   legalName: "Elemental Pro SPA",
-  url: "https://www.elementalpro.cl",
+  url: "https://elementalpro.cl",
   description:
     "Infraestructura tecnológica para empresas, industria y organismos públicos: CCTV, redes, fibra óptica, data center, control de acceso y soporte técnico integral.",
   locale: "es-CL",

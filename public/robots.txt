@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.elementalpro.cl/sitemap-index.xml
+Sitemap: https://elementalpro.cl/sitemap-index.xml
