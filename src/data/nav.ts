@@ -9,9 +9,8 @@ export const primaryNav: NavLink[] = [
     href: "/servicios",
     children: services.map((s) => ({ label: s.shortName, href: `/servicios/${s.slug}` })),
   },
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Clientes", href: "/clientes" },
-  { label: "Blog", href: "/blog" },
+  // Proyectos, Clientes y Blog: deshabilitados temporalmente hasta tener
+  // contenido real (ver src/pages/_proyectos, _clientes.astro, _blog).
   { label: "Preguntas Frecuentes", href: "/preguntas-frecuentes" },
 ];
 
@@ -22,9 +21,6 @@ export const footerServiceLinks: NavLink[] = services.map((s) => ({
 
 export const footerCompanyLinks: NavLink[] = [
   { label: "Nosotros", href: "/nosotros" },
-  { label: "Proyectos", href: "/proyectos" },
-  { label: "Clientes", href: "/clientes" },
-  { label: "Blog", href: "/blog" },
   { label: "Contacto", href: "/contacto" },
 ];
 

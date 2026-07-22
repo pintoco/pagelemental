@@ -65,7 +65,7 @@ const schemas = [organizationSchema(), ...structuredData];
     <meta name="twitter:image" content={ogImage} />
 
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} — Blog`} href="/rss.xml" />
+    {/* RSS feed link disabled along with the blog — see src/pages/_rss.xml.js */}
 
     {schemas.map((schema) => (
       <script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />
