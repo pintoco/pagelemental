@@ -1,8 +1,8 @@
 import type { Partner, Stat, Testimonial } from "@/types";
 
 export const stats: Stat[] = [
-  { value: "180+", label: "Proyectos entregados" },
-  { value: "12", label: "Años de trayectoria" },
+  { value: "100+", label: "Proyectos entregados" },
+  { value: "9", label: "Años de trayectoria" },
   { value: "40+", label: "Clientes corporativos activos" },
   { value: "99.9%", label: "Disponibilidad en contratos SLA" },
 ];
